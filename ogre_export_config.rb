@@ -37,7 +37,7 @@ $g_ogre_path_textures = "c:\\SketchUpOgreExport"
 
 # If true, auto conversion of xml to binary meshes will be performed,
 # using the converter exe specified in $g_ogre_path_xml_converter.
-$g_ogre_convert_xml = true
+$g_ogre_convert_xml = false
 
 # Path of OgreXmlConverter.exe. This is required to auto convert xml meshes into binary.
 $g_ogre_path_xml_converter = "C:\\libs\ogre-1.4.9\\Tools\\Common\\bin\\Release\\OgreXmlConverter.exe"

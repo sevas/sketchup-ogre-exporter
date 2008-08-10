@@ -16,70 +16,70 @@
 # http://www.gnu.org/copyleft/lesser.txt.
 
 def iterate_for_backfaces(mat, entity_list)
-	for e in entity_list
-		if e.class == Sketchup::Group
-			iterate_for_backfaces(mat, e.entities)
-		end
-		if e.class == Sketchup::ComponentInstance
-			if $g_backfaces_instances[e.definition] == nil or mat == nil
-				$g_backfaces_instances[e.definition] = true
-				iterate_for_backfaces(mat, e.definition.entities)
-			end
-		end
-		if e.class == Sketchup::Face
-			if mat==nil
-				if e.material == Sketchup.active_model.materials["Backfaces"]
-					e.material = $g_backfaces[e]
-				end
-				if e.back_material == Sketchup.active_model.materials["Backfaces"]
-					e.back_material = $g_backfaces[e]
-				end
-			else
-				$g_backfaces[e]=e.back_material
-				e.back_material = mat
-			end
-		end
-	end
+  for e in entity_list
+    if e.class == Sketchup::Group
+      iterate_for_backfaces(mat, e.entities)
+    end
+    if e.class == Sketchup::ComponentInstance
+      if $g_backfaces_instances[e.definition] == nil or mat == nil
+        $g_backfaces_instances[e.definition] = true
+        iterate_for_backfaces(mat, e.definition.entities)
+      end
+    end
+    if e.class == Sketchup::Face
+      if mat==nil
+        if e.material == Sketchup.active_model.materials["Backfaces"]
+          e.material = $g_backfaces[e]
+        end
+        if e.back_material == Sketchup.active_model.materials["Backfaces"]
+          e.back_material = $g_backfaces[e]
+        end
+      else
+        $g_backfaces[e]=e.back_material
+        e.back_material = mat
+      end
+    end
+  end
 end
 
 def highlight_backfaces
-	$g_backfaces = {}
-	$g_backfaces_instances = {}
-	mat = Sketchup.active_model.materials["Backfaces"]
-	if mat == nil
-		mat = Sketchup.active_model.materials.add "Backfaces"
-	end
-	mat.color=[255,48,200]
-	mat.texture = nil
-	iterate_for_backfaces(mat,Sketchup.active_model.entities)
+  $g_backfaces = {}
+  $g_backfaces_instances = {}
+  mat = Sketchup.active_model.materials["Backfaces"]
+  if mat == nil
+    mat = Sketchup.active_model.materials.add "Backfaces"
+  end
+  mat.color=[255,48,200]
+  mat.texture = nil
+  iterate_for_backfaces(mat,Sketchup.active_model.entities)
 end
 
 def unhighlight_backfaces
-	if $g_backfaces.size>0
-		iterate_for_backfaces(nil,Sketchup.active_model.entities)
-		$g_backfaces = {}
-		$g_backfaces_instances = {}
-	end
+  if $g_backfaces.size>0
+    iterate_for_backfaces(nil,Sketchup.active_model.entities)
+    $g_backfaces = {}
+    $g_backfaces_instances = {}
+  end
 end
 
 def restore_backface_flip(e)
-	if e.class == Sketchup::Face
-		e.reverse!
-		if e.material == Sketchup.active_model.materials["Backfaces"]
-			e.material = $g_backfaces[e]
-		end
-		if e.back_material == Sketchup.active_model.materials["Backfaces"]
-			e.back_material = $g_backfaces[e]
-		end
-		$g_backfaces.delete e
-		temp = e.back_material
-		e.back_material = e.material
-		e.material = temp
-	end
+  if e.class == Sketchup::Face
+    e.reverse!
+    if e.material == Sketchup.active_model.materials["Backfaces"]
+      e.material = $g_backfaces[e]
+    end
+    if e.back_material == Sketchup.active_model.materials["Backfaces"]
+      e.back_material = $g_backfaces[e]
+    end
+    $g_backfaces.delete e
+    temp = e.back_material
+    e.back_material = e.material
+    e.material = temp
+  end
 end
 
 def unhighlight_flip_backface
-	Sketchup.active_model.selection.each{|e| restore_backface_flip(e)}
+  Sketchup.active_model.selection.each{|e| restore_backface_flip(e)}
 end
 
 menu = UI.menu "Tools";

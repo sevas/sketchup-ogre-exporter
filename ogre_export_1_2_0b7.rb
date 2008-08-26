@@ -668,13 +668,24 @@ def ogre_export_selected
       tex_id = tex_id + 1		
     }
   }
-  
-  layer_map.keys.each{ |layername|
-    faces_map = layer_map[layername]
 
-      #  
-      # Write geometry
-      #
+
+  filtered = layer_map.select {|k,v| k != nil }
+
+  layer_map = { }
+  
+  filtered.each{ |e|
+    layer_map[e[0]] = e[1]
+  }
+
+
+
+  layer_map.keys.each{ |layername|    
+    faces_map = layer_map[layername]
+    
+    #  
+    # Write geometry
+    # 
     if $g_ogre_export_meshes
       puts "Exporting meshes for layer #{layername}...\n"
       file_mesh_xml = open(append_paths($g_ogre_path_meshes,
